@@ -63,23 +63,25 @@ def zipper (dir_path: os.path, zip_file_path: os.path):
                 zipf.write (file_path, os.path.relpath (file_path, dir_path))
 
 
-def main ():
+def rm_bak_dir ():
+    print (f"removing the backup dir [{backup_dir_path}].")
+    os.system (f"rm -r {backup_dir_path}")
+    print_success (f"Successfully removed the backup dir [{backup_dir_path}].")
+
+
+def main (rm_bak: bool = True):
     try: pkgs_backup (); print_success ("Successfully creted the backup file for all the installed pkgs.")
     except Exception as e: print_error (e)
 
     try: cfg_backup (); print_success ("Successfully creted the backup dir for all the custom configs.")
     except Exception as e: print_error (e)
 
-    try: 
-        zipper (backup_dir_path, f"{backup_dir_path}.zip")
-        print_success (f"Successfully compressed the backup dir as '{backup_dir_path}.zip'.")
-        
-        print (f"removing the backup dir [{backup_dir_path}].")
-        os.system (f"rm -r {backup_dir_path}")
-        print_success (f"Successfully removed the backup dir [{backup_dir_path}].")
-
-
+    try: zipper (backup_dir_path, f"{backup_dir_path}.zip"); print_success (f"Successfully compressed the backup dir as '{backup_dir_path}.zip'.")
     except Exception as e: print_error (e)
+
+    if rm_bak:
+        try: rm_bak_dir ()
+        except Exception as e: print_error (e)
 
 
 if __name__ == "__main__":
